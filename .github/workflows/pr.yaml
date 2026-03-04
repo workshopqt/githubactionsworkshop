@@ -18,15 +18,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Generate Short SHA
       - name: Set Short SHA
         id: short-sha-step
         run: |
-          FULL_SHA=${{ github.event.pull_request.head.sha }}
-          SHORT_SHA=${FULL_SHA:0:7}
+          SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
           echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_OUTPUT
           echo "Generated Short SHA: $SHORT_SHA"
-
       # Setup Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
