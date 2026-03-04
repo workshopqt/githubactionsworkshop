@@ -31,57 +31,41 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Install Trivy
-      - name: Setup Trivy
-        uses: aquasecurity/setup-trivy@v0.2.2
-        with:
-          version: v0.65.0
-          cache: true
-
       # ---------------- ORDER SERVICE ----------------
 
       - name: Build order service image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./src/order-service
-          load: true
-          tags: order-service:${{ steps.short-sha-step.outputs.SHORT_SHA }}
+        run: |
+          docker build \
+          -t order-service:${{ steps.short-sha-step.outputs.SHORT_SHA }} \
+          ./src/order-service
 
       - name: Scan order service image
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          image-ref: order-service:${{ steps.short-sha-step.outputs.SHORT_SHA }}
-          format: sarif
-          output: order-trivy-results.sarif
+        run: |
+          trivy image --severity HIGH,CRITICAL \
+          order-service:${{ steps.short-sha-step.outputs.SHORT_SHA }}
 
       # ---------------- PRODUCT SERVICE ----------------
 
       - name: Build product service image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./src/product-service
-          load: true
-          tags: product-service:${{ steps.short-sha-step.outputs.SHORT_SHA }}
+        run: |
+          docker build \
+          -t product-service:${{ steps.short-sha-step.outputs.SHORT_SHA }} \
+          ./src/product-service
 
       - name: Scan product service image
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          image-ref: product-service:${{ steps.short-sha-step.outputs.SHORT_SHA }}
-          format: sarif
-          output: product-trivy-results.sarif
+        run: |
+          trivy image --severity HIGH,CRITICAL \
+          product-service:${{ steps.short-sha-step.outputs.SHORT_SHA }}
 
       # ---------------- STORE FRONT ----------------
 
       - name: Build store front image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./src/store-front
-          load: true
-          tags: store-front:${{ steps.short-sha-step.outputs.SHORT_SHA }}
+        run: |
+          docker build \
+          -t store-front:${{ steps.short-sha-step.outputs.SHORT_SHA }} \
+          ./src/store-front
 
       - name: Scan store front image
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          image-ref: store-front:${{ steps.short-sha-step.outputs.SHORT_SHA }}
-          format: sarif
-          output: store-trivy-results.sarif
+        run: |
+          trivy image --severity HIGH,CRITICAL \
+          store-front:${{ steps.short-sha-step.outputs.SHORT_SHA }}
