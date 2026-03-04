@@ -32,6 +32,8 @@ jobs:
                   echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_OUTPUT
                   echo "Generated Short SHA: $SHORT_SHA"
 
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
             # --- Order Service Build and Scan ---
             - name: Build and export order service to Docker
               uses: docker/build-push-action@v6
